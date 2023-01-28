@@ -42,8 +42,8 @@ for (let i = 0; i < 24; i++) {
  alldata[i] = await getXML(all[i].url);
  alldata[i] = XML.toJSON(alldata[i]);
  if (i != 24) {
-  let a = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_分["#text"]) / 60;
-  let n = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_分["#text"]) / 60;
+  let a = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_秒["#text"]) / 3600;
+  let n = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_秒["#text"]) / 3600;
   let v = Number(alldata[i].ボーリング情報.コア情報.標準貫入試験[0].標準貫入試験_合計打撃回数["#text"]);
 
   gArray[i] = new GeoData(Number(a), Number(n), Number(v));
