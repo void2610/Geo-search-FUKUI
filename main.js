@@ -1,28 +1,20 @@
-//import { XML } from "https://js.sabae.cc/XML.js";
+import { XML } from "https://js.sabae.cc/XML.js";
 
-function GetXML(link) {
- let req = new XMLHttpRequest();
- req.onreadystatechange = function () {
-  if (req.readyState == 4 && req.status == 200) {
-  }
- };
- req.open("GET", link, false);
- req.send(null);
- return req.responseText;
+async function getXML(link) {
+ return await (await fetch(link)).text();
 }
 
-class GeoData {}
+// class GeoData {}
+let allXML = await getXML("https://geofukui.github.io/jiban-opendata/boring.json");
 
-allXML = GetXML("https://geofukui.github.io/jiban-opendata/boring.json");
-
-all = JSON.parse(allXML);
+let all = JSON.parse(allXML);
 
 console.log(all[0].url);
 
-data1 = GetXML(all[0].url);
+let data1 = await getXML(all[0].url);
 
-//let doc = xmlTojson(data1);
-console.log(data1);
+let doc = XML.toJSON(data1);
+console.log(doc);
 
 var map = L.map("mapid").setView([35.688544, 139.764692], 18);
 L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
