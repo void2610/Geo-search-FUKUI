@@ -6,6 +6,10 @@ async function getXML(link) {
 let num;
 while (1) {
   num = prompt("読み込むデータ件数を入力(~2397)");
+  if (num === null) {
+    num = 10; // default
+    break;
+  }
   if (num > 0 && num < 2397) {
     break;
   }
