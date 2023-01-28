@@ -1,7 +1,14 @@
 import { XML } from "https://js.sabae.cc/XML.js";
 
 async function getXML(link) {
- return await (await fetch(link)).text();
+ return await (await fetch(link, { mode: "cors" })).text();
+}
+var num;
+while (1) {
+ num = prompt("読み込むデータ件数を入力(~2397)");
+ if (num > 0 && num < 2397) {
+  break;
+ }
 }
 
 class GeoData {
@@ -15,8 +22,12 @@ class GeoData {
   this.value = v;
  }
 }
-
+let text = document.getElementById("text");
 function setPin(a, n, v) {
+ if (v == 0) {
+  console.log("error");
+  return;
+ }
  let color = "green";
  if (v < 3) {
   color = "red";
@@ -38,17 +49,23 @@ let alldata = new Array(2398);
 
 let gArray = new Array(2398);
 
-for (let i = 0; i < 24; i++) {
+for (let i = 0; i < num; i++) {
+ text.innerText = "データロード中... " + (i + 1) + "/" + num;
  alldata[i] = await getXML(all[i].url);
  alldata[i] = XML.toJSON(alldata[i]);
- if (i != 24) {
-  let a = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_秒["#text"]) / 3600;
-  let n = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_秒["#text"]) / 3600;
-  let v = Number(alldata[i].ボーリング情報.コア情報.標準貫入試験[0].標準貫入試験_合計打撃回数["#text"]);
-
-  gArray[i] = new GeoData(Number(a), Number(n), Number(v));
-  //console.log("緯度 " + a + " 経度 " + n + " n値 " + v);
+ console.log(i);
+ let a, n, v;
+ if (!alldata[i].ボーリング情報.コア情報.標準貫入試験) {
+  console.log("no data");
+ } else {
+  if (!alldata[i].ボーリング情報.コア情報.標準貫入試験.標準貫入試験_合計打撃回数) {
+   a = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.経度_秒["#text"]) / 3600;
+   n = Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_度["#text"]) + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_分["#text"]) / 60 + Number(alldata[i].ボーリング情報.標題情報.経度緯度情報.緯度_秒["#text"]) / 3600;
+   v = Number(alldata[i].ボーリング情報.コア情報.標準貫入試験[0].標準貫入試験_合計打撃回数["#text"]);
+  }
  }
+ gArray[i] = new GeoData(Number(a), Number(n), Number(v));
+ //console.log("緯度 " + a + " 経度 " + n + " n値 " + v);
 }
 
 var map = L.map("mapid").setView([35.688545, 139.764693], 18);
@@ -58,8 +75,10 @@ L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.1/dist/images/";
 
-for (let i = 0; i < 24; i++) {
+for (let i = 0; i < num; i++) {
  console.log(gArray[i]);
-
+ if (!gArray[i].lat) {
+  continue;
+ }
  setPin(gArray[i].lat, gArray[i].lng, gArray[i].value);
 }
