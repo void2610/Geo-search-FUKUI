@@ -3,7 +3,7 @@ import { XML } from "https://js.sabae.cc/XML.js";
 async function getXML(link) {
   return await (await fetch(link, { mode: "cors" })).text();
 }
-var num;
+let num;
 while (1) {
   num = prompt("読み込むデータ件数を入力(~2397)");
   if (num > 0 && num < 2397) {
@@ -20,7 +20,7 @@ class GeoData {
     this.value = v;
   }
 }
-let text = document.getElementById("text");
+const text = document.getElementById("text");
 function setPin(a, n, v) {
   if (v == 0) {
     console.log("error");
@@ -30,17 +30,17 @@ function setPin(a, n, v) {
   if (v < 3) {
     color = "red";
   }
-  var marker = L.marker([
+  const marker = L.marker([
     n,
     a
   ], { icon: L.spriteIcon(color) }).addTo(map);
   //上のマーカーにポップアップを追加する。
   marker.bindPopup(String(v)).openPopup();
 }
-let allXML = await getXML("https://geofukui.github.io/jiban-opendata/boring.json");
-let all = JSON.parse(allXML);
-let alldata = new Array(2398);
-let gArray = new Array(2398);
+const allXML = await getXML("https://geofukui.github.io/jiban-opendata/boring.json");
+const all = JSON.parse(allXML);
+const alldata = new Array(2398);
+const gArray = new Array(2398);
 for (let i = 0; i < num; i++) {
   text.innerText = "データロード中... " + (i + 1) + "/" + num;
   alldata[i] = await getXML(all[i].url);
@@ -58,7 +58,7 @@ for (let i = 0; i < num; i++) {
   }
   gArray[i] = new GeoData(Number(a), Number(n), Number(v));  //console.log("緯度 " + a + " 経度 " + n + " n値 " + v);
 }
-var map = L.map("mapid").setView([
+const map = L.map("mapid").setView([
   35.688545,
   139.764693
 ], 18);
