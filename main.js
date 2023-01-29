@@ -1,4 +1,5 @@
 import { XML } from "https://js.sabae.cc/XML.js";
+import { shuffle } from "https://js.sabae.cc/shuffle.js";
 
 async function getXML(link) {
   return await (await fetch(link, { mode: "cors" })).text();
@@ -45,6 +46,7 @@ const allXML = await getXML("https://geofukui.github.io/jiban-opendata/boring.js
 const all = JSON.parse(allXML);
 const alldata = new Array(2398);
 const gArray = new Array(2398);
+shuffle(all);
 for (let i = 0; i < num; i++) {
   text.innerText = "データロード中... " + (i + 1) + "/" + num;
   alldata[i] = await getXML(all[i].url);
@@ -62,6 +64,7 @@ for (let i = 0; i < num; i++) {
   }
   gArray[i] = new GeoData(Number(a), Number(n), Number(v));  //console.log("緯度 " + a + " 経度 " + n + " n値 " + v);
 }
+text.innerText = "Geo Search FUKUI";
 const map = L.map("mapid").setView([
   35.688545,
   139.764693
